@@ -19,6 +19,7 @@ int myFunction(int x, int y) {
 
 #include <QTRSensors.h>
 
+//#include <stdint.h>
 
 // This example is designed for use with eight RC QTR sensors. These
 // reflectance sensors should be connected to digital pins 3 to 10. The
@@ -47,12 +48,27 @@ int myFunction(int x, int y) {
 // last seen by sensor 5 before being lost.
 
 QTRSensors qtr;
-
+/*
+//QTRSensorsRC qtrrc((unsigned char[]) {0, 9, 15, 17}, 4);
 const uint8_t SensorCount = 8;
 uint16_t sensorValues[SensorCount];
 
 void setup()
 {
+
+  //pins de l'Arduino 
+
+  pinMode(2, OUTPUT);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);
+  pinMode(6, INPUT);
+  pinMode(7, INPUT);
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(10, INPUT);
+
+
   // configure the sensors
   qtr.setTypeRC();
   qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
@@ -108,7 +124,7 @@ void loop()
   Serial.println(position);
 
   delay(250);
-}
+}*/
 
 // This example is designed for use with eight RC QTR sensors. These
 // reflectance sensors should be connected to digital pins 3 to 10. The
@@ -124,16 +140,29 @@ void loop()
 // setTimeout()).
 
 /*QTRSensors qtr;
-
+*/
 const uint8_t SensorCount = 8;
 uint16_t sensorValues[SensorCount];
 
 void setup()
 {
+
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+
   // configure the sensors
   qtr.setTypeRC();
   qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
   qtr.setEmitterPin(2);
+
+  digitalWrite(2,HIGH);
 
   Serial.begin(9600);
 }
@@ -148,6 +177,38 @@ void loop()
   // reflectance and 2500 means minimum reflectance
   for (uint8_t i = 0; i < SensorCount; i++)
   {
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+   digitalWrite(3, HIGH); // sets the digital pin 13 on
+              // waits for a second
+   digitalWrite(4, HIGH); // sets the digital pin 13 on
+              // waits for a second
+   digitalWrite(5, HIGH); // sets the digital pin 13 on
+            // waits for a second
+   digitalWrite(6, HIGH); // sets the digital pin 13 on
+             // waits for a second
+   digitalWrite(7, HIGH); // sets the digital pin 13 on
+             // waits for a second
+   digitalWrite(8, HIGH); // sets the digital pin 13 on
+             // waits for a second
+   digitalWrite(9, HIGH); // sets the digital pin 13 on
+            // waits for a second
+   digitalWrite(10, HIGH); // sets the digital pin 13 on
+            // waits for a second*/
+     pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);
+  pinMode(6, INPUT);
+  pinMode(7, INPUT);
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(10, INPUT);
     Serial.print(sensorValues[i]);
     Serial.print('\t');
   }
@@ -155,4 +216,3 @@ void loop()
 
   delay(250);
 }
-*/
