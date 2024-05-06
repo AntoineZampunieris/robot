@@ -58,6 +58,65 @@ DRV8835MotorShield motors;
 const uint8_t SensorCount = 8;
 uint16_t sensorValues[SensorCount];
 
+DRV8835MotorShield::DRV8835MotorShield() :
+  _M1DIR(7), _M1PWM(9), _M2DIR(8), _M2PWM(10)
+{
+}
+
+DRV8835MotorShield::DRV8835MotorShield(uint8_t M1DIR,
+                                       uint8_t M1PWM,
+                                       uint8_t M2DIR,
+                                       uint8_t M2PWM) :
+  _M1DIR(M1DIR), _M1PWM(M1PWM),
+  _M2DIR(M2DIR), _M2PWM(M2PWM)
+{
+}
+
+
+void DRV8835MotorShield::initPinsAndMaybeTimer()
+{
+  // Initialize the pin states used by the motor driver shield
+  // digitalWrite is called before and after setting pinMode.
+  // It called before pinMode to handle the case where the board
+  // is using an ATmega AVR to avoid ever driving the pin high,
+  // even for a short time.
+  // It is called after pinMode to handle the case where the board
+  // is based on the Atmel SAM3X8E ARM Cortex-M3 CPU, like the Arduino
+  // Due. This is necessary because when pinMode is called for the Due
+  // it sets the output to high (or 3.3V) regardless of previous
+  // digitalWrite calls.
+  digitalWrite(_M1PWM, LOW);
+  pinMode(_M1PWM, OUTPUT);
+  digitalWrite(_M1PWM, LOW);
+  digitalWrite(_M2PWM, LOW);
+  pinMode(_M2PWM, OUTPUT);
+  digitalWrite(_M2PWM, LOW);
+  digitalWrite(_M1DIR, LOW);
+  pinMode(_M1DIR, OUTPUT);
+  digitalWrite(_M1DIR, LOW);
+  digitalWrite(_M2DIR, LOW);
+  pinMode(_M2DIR, OUTPUT);
+  digitalWrite(_M2DIR, LOW);
+#ifdef DRV8835MOTORSHIELD_TIMER1_AVAILABLE
+  if (_M1PWM == _M1PWM_TIMER1_PIN && _M2PWM == _M2PWM_TIMER1_PIN)
+  {
+	// timer 1 configuration
+	// prescaler: clockI/O / 1
+	// outputs enabled
+	// phase-correct PWM
+	// top of 400
+	//
+	// PWM frequency calculation
+	// 16MHz / 1 (prescaler) / 2 (phase-correct) / 400 (top) = 20kHz
+	TCCR1A = 0b10100000;
+	TCCR1B = 0b00010001;
+	ICR1 = 400;
+  }
+#endif
+}
+
+//void demarrage(void);
+
 void setup()
 {
 
@@ -76,8 +135,8 @@ void setup()
 
   // configure the sensors
   qtr.setTypeRC();
-  qtr.setSensorPins((const uint8_t[]){3, 4, 5, 6, 7, 8, 9, 10}, SensorCount);
-  qtr.setEmitterPin(2);
+  qtr.setSensorPins((const uint8_t[]){A4, A3, A2, A1, A0, 4, 5, 6}, SensorCount);
+  qtr.setEmitterPin(A5);
 
   delay(500);
   digitalWrite(2,HIGH);
@@ -112,19 +171,25 @@ void setup()
   Serial.println();
   Serial.println();
   delay(1000);
-  demarrage();
-}
-
-void demarrage(){
+  //demarrage();
   for (int speed = 0; speed <= 400; speed++)
   {
     motors.setM1Speed(speed);
     motors.setM2Speed(speed);
-    delay(2);
+    delay(5);
+  }
+}
+
+/*void demarrage(){
+  for (int speed = 0; speed <= 400; speed++)
+  {
+    motors.setM1Speed(speed);
+    motors.setM2Speed(speed);
+    delay(5);
   }
   
 
-}
+}*/
 
 void loop()
 {
